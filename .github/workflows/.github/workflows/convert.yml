@@ -1,0 +1,32 @@
+name: Convert PDFs to Markdown
+
+on:
+  push:
+    paths:
+      - 'pdfs/**'
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install pdfminer.six
+
+      - name: Run conversion script
+        run: python convert_pdf_to_md.py
+
+      - name: Commit results
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add markdowns
+          git commit -m "Converted PDFs to Markdown"
+          git push
